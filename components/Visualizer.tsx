@@ -1,9 +1,11 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useRafLoop } from "react-use";
 import dynamic from "next/dynamic";
-import { Howl, Howler } from "howler";
+import { Howl } from "howler";
+import useFrequencyData from "../hooks/useFrequencyData";
 
 const Visualizer = () => {
+  const frequencyData = useFrequencyData();
   const sound = new Howl({
     src: [
       "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3",
@@ -14,26 +16,9 @@ const Visualizer = () => {
   const [canvasContext, setCanvasContext] =
     useState<CanvasRenderingContext2D | null>(null);
 
-  // create an analyser node in the Howler WebAudio context
-  const audioContext = Howler.ctx;
-  const audioAnalyser = useMemo(
-    () => audioContext.createAnalyser(),
-    [audioContext]
-  );
-  audioAnalyser.fftSize = 1024;
-  const frequencyData = useMemo(
-    () => new Uint8Array(audioAnalyser.frequencyBinCount),
-    [audioAnalyser]
-  );
-
   useEffect(() => {
     if (canvasRef.current) setCanvasContext(canvasRef.current.getContext("2d"));
   }, [canvasRef]);
-
-  useEffect(() => {
-    // connect the masterGain -> analyser (disconnecting masterGain -> destination)
-    Howler.masterGain.connect(audioAnalyser);
-  }, [audioAnalyser, audioContext]);
 
   const draw = (data: any[]) => {
     if (canvasContext && canvasRef.current) {
@@ -59,11 +44,8 @@ const Visualizer = () => {
   };
 
   useRafLoop(() => {
-    audioAnalyser.getByteFrequencyData(frequencyData);
-    // console.log("frequencyData", frequencyData);
-
     // @ts-expect-error
-    draw([...frequencyData]);
+    draw(frequencyData);
   });
 
   return (
