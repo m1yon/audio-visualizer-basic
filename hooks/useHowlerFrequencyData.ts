@@ -2,11 +2,11 @@ import { useEffect, useMemo } from "react";
 import { Howler } from "howler";
 import { useRafLoop } from "react-use";
 
-type useFrequencyDataArgs = {
+type useHowlerFrequencyDataArgs = {
   audioNodes: AudioNode[];
 };
 
-const useFrequencyData = ({ audioNodes }: useFrequencyDataArgs) => {
+const useHowlerFrequencyData = ({ audioNodes }: useHowlerFrequencyDataArgs) => {
   // force Howler to initialize an AudioContext
   if (!Howler.ctx) Howler.mute(false);
 
@@ -45,4 +45,4 @@ const useFrequencyData = ({ audioNodes }: useFrequencyDataArgs) => {
   return frequencyDataArrays;
 };
 
-export default useFrequencyData;
+export default useHowlerFrequencyData;

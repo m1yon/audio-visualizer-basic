@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useRafLoop } from "react-use";
 import dynamic from "next/dynamic";
 import { Howl } from "howler";
-import useFrequencyData from "../hooks/useFrequencyData";
+import useHowlerFrequencyData from "../hooks/useHowlerFrequencyData";
 
 const Visualizer = () => {
   const sounds = [
@@ -16,7 +16,7 @@ const Visualizer = () => {
     }),
   ];
 
-  const frequencyData = useFrequencyData({
+  const frequencyData = useHowlerFrequencyData({
     // @ts-expect-error accessing hidden attributes
     audioNodes: sounds.map((audio) => audio._sounds[0]._node),
   });
