@@ -5,11 +5,20 @@ import { Howl } from "howler";
 import useFrequencyData from "../hooks/useFrequencyData";
 
 const Visualizer = () => {
-  const frequencyData = useFrequencyData();
-  const sound = new Howl({
-    src: [
-      "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3",
-    ],
+  const sounds = [
+    new Howl({
+      src: [
+        "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3",
+      ],
+    }),
+    new Howl({
+      src: ["audio/porter.mp3"],
+    }),
+  ];
+
+  const frequencyData = useFrequencyData({
+    // @ts-expect-error accessing hidden attributes
+    audioNodes: sounds.map((audio) => audio._sounds[0]._node),
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,14 +54,18 @@ const Visualizer = () => {
 
   useRafLoop(() => {
     // @ts-expect-error
-    draw(frequencyData);
+    draw(frequencyData[0]);
   });
 
   return (
     <>
       <canvas ref={canvasRef} width="500" height="500"></canvas>
-      <button onClick={() => sound.play()}>play</button>
-      <button onClick={() => sound.pause()}>pause</button>
+      <button onClick={() => sounds.forEach((sound) => sound.play())}>
+        play
+      </button>
+      <button onClick={() => sounds.forEach((sound) => sound.pause())}>
+        pause
+      </button>
     </>
   );
 };
