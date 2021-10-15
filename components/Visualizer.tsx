@@ -6,11 +6,11 @@ import useHowlerFrequencyData from "../hooks/useHowlerFrequencyData";
 
 const Visualizer = () => {
   const sounds = [
-    new Howl({
-      src: [
-        "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3",
-      ],
-    }),
+    // new Howl({
+    //   src: [
+    //     "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_1MG.mp3",
+    //   ],
+    // }),
     new Howl({
       src: ["audio/porter.mp3"],
     }),
@@ -38,14 +38,38 @@ const Visualizer = () => {
         canvasRef.current.height // height
       );
 
-      const space = canvasRef.current.width / data.length;
+      canvasContext.fillRect(
+        0,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
+
+      const spaceWidth = (canvasRef.current?.width || 0) / data.length;
+      const height = (canvasRef.current?.height || 0) / 2;
+      // console.log(data.length);
+      // console.log("width: " + canvasRef.current.width);
+      // console.log("height: " + canvasRef.current.height);
+      // console.log(data);
+      // console.log(spaceHeight);
 
       data.forEach((value, i) => {
         canvasContext.beginPath();
-        canvasContext.moveTo(space * i, canvasRef.current?.height || 0); // x, y
+        canvasContext.lineWidth = 10;
+        canvasContext.lineCap = "round";
+        canvasContext.strokeStyle = "white";
+
+        canvasContext.moveTo(5 + i * spaceWidth, height); // x, y
         canvasContext.lineTo(
-          space * i,
-          (canvasRef.current?.height || 0) - value
+          5 + i * spaceWidth,
+          height - ((value / 255) * (canvasRef.current?.height || 0)) / 2
+        ); // x, y
+        canvasContext.stroke();
+
+        canvasContext.moveTo(5 + i * spaceWidth, height); // x, y
+        canvasContext.lineTo(
+          5 + i * spaceWidth,
+          height + ((value / 255) * (canvasRef.current?.height || 0)) / 2
         ); // x, y
         canvasContext.stroke();
       });
@@ -59,12 +83,18 @@ const Visualizer = () => {
 
   return (
     <>
-      <canvas ref={canvasRef} width="500" height="500"></canvas>
+      <canvas ref={canvasRef} width="250" height="100" />
       <button onClick={() => sounds.forEach((sound) => sound.play())}>
         play
       </button>
       <button onClick={() => sounds.forEach((sound) => sound.pause())}>
         pause
+      </button>
+      <button onClick={() => sounds.forEach((sound) => sound.mute(true))}>
+        mute
+      </button>
+      <button onClick={() => sounds.forEach((sound) => sound.mute(false))}>
+        un-mute
       </button>
     </>
   );
