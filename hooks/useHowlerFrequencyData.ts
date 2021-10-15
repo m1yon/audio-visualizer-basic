@@ -18,7 +18,10 @@ const useHowlerFrequencyData = ({ audioNodes }: useHowlerFrequencyDataArgs) => {
 
   // set the fftSize for each analyzer
   audioAnalysers.forEach((audioAnalyser) => {
-    audioAnalyser.fftSize = 1024;
+    audioAnalyser.fftSize = 32; //signifies how many data points - default 2048
+    audioAnalyser.minDecibels = -100; //default -100db
+    audioAnalyser.maxDecibels = 0; //default -30db
+    audioAnalyser.smoothingTimeConstant = 0.8; //double between 0 & 1, smooths data  - default 0.8 - 0.9 is nice
   });
 
   // create frequency arrays to store the output
